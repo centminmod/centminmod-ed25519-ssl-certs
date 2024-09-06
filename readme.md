@@ -438,3 +438,31 @@ Could not determine the protocol, only simulating generic clients.
 
  Done 2024-09-06 04:27:50 [  36s] -->> 192.168.122.60:443 (domain.com) <<--
 ```
+
+# ED25519 Browser and Certificate Support
+
+### Summary of EdDSA (Ed25519) Browser and Certificate Support Challenges:
+
+1. **EdDSA Adoption and FIPS 186-5**:  
+   As of **February 3, 2023**, EdDSA (Edwards-curve Digital Signature Algorithm) officially replaced the outdated DSA algorithm with the release of FIPS 186-5. This made EdDSA the recommended algorithm for digital signatures within U.S. government standards. However, the broader adoption of EdDSA in the web infrastructure has lagged behind, especially for **SSL/TLS certificates**.
+
+2. **CAB Forum Inaction**:  
+   Despite EdDSA's inclusion in **S/MIME** (email security), the **CA/Browser Forum** has not yet taken action to include EdDSA in SSL/TLS server certificates. As a result, Certificate Authorities (CAs) and web browsers have not widely adopted it. This creates a gap in the ecosystem, particularly since FIPS 186-4 (which relies on RSA and ECDSA) will sunset in **February 2024**. This could leave the internet underprepared for potential vulnerabilities in the older algorithms without a fallback to EdDSA.
+
+3. **EdDSA is Fully Standardized for TLS**:  
+   EdDSA algorithms such as **Ed25519** and **Ed448** are fully supported in **TLS 1.2** and **TLS 1.3**. The relevant standards, including **RFC 8446** (TLS 1.3), RFC 8422, and RFC 8410, outline how EdDSA keys can be used for key exchange and digital signatures in TLS communications. However, the lack of browser and CA support continues to hinder practical implementation.
+
+4. **Resistance to Algorithm Expansion**:  
+   Some root programs, including major Certificate Authorities, have indicated that they are not interested in expanding their supported algorithm sets beyond **RSA** and **NIST EC (Elliptic Curve)** curves. This presents a significant barrier to the adoption of EdDSA in publicly trusted certificates.
+
+5. **Focus on Post-Quantum Cryptography**:  
+   The next major shift in cryptographic algorithms is likely to focus on **post-quantum algorithms** rather than adopting new elliptic curve algorithms like Ed25519. This shift is driven by the need to protect against quantum computing attacks, which could render current algorithms vulnerable in the future.
+
+6. **OpenSSL and SSH Support**:  
+   Despite limited browser support, Ed25519 has been supported by **OpenSSL** for five years and is widely used in **SSH** (Secure Shell) since 2013. This demonstrates the algorithm’s stability and utility in non-browser environments, but the gap in web infrastructure remains a challenge.
+
+7. **Challenges with Low-Order Points**:  
+   One technical disadvantage of Ed25519 is that it's not a prime-order curve, which introduces potential risks with low-order points. In contrast, NIST curves have improved complete addition formulas, offering more robust security in some scenarios.
+
+### Conclusion:
+While EdDSA (Ed25519) has strong technical support and advantages, particularly in performance and security, its adoption in SSL/TLS certificates remains limited due to browser and CA reluctance. The focus is shifting toward **post-quantum cryptography**, and until CA/Browser Forum action is taken, EdDSA certificates may not be widely supported.
