@@ -262,3 +262,179 @@ SSL-Session:
 read R BLOCK
 DONE
 ```
+
+# testssl
+
+Centmin Mod `tools/switch-nginx-ciphers.sh` tool's testssl run. Notice TLSv1.2/TLSv1.3 sig_algs offered = `ED25519` and 
+
+```
+Signature Algorithm          Ed25519
+Server key size              EdDSA Ed25519
+```
+
+And notice the `client simulations` many clients and web browser's do not yet support `ED25519` - only Java, Go, OpenSSL clients support it.
+
+Full `tools/switch-nginx-ciphers.sh` tool's testssl run:
+
+```
+tools/switch-nginx-ciphers.sh testssl domain.com:443
+testssl.sh --nodns=min --wide -p -c -f -E -S -P --quiet https://domain.com:443
+
+ Start 2024-09-06 04:27:16                -->> 192.168.122.60:443 (domain.com) <<--
+
+ Testing protocols via sockets except NPN+ALPN 
+
+ SSLv2      not offered (OK)
+ SSLv3      not offered (OK)
+ TLS 1      not offered
+ TLS 1.1    not offered
+ TLS 1.2    offered (OK)
+ TLS 1.3    offered (OK): final
+ NPN/SPDY   not offered
+ ALPN/HTTP2 not offered
+
+ Testing server's cipher preferences 
+
+no matching cipher in this list found (pls report this): DHE-RSA-SEED-SHA:SEED-SHA:DES-CBC3-SHA:RC4-MD5:DES-CBC-SHA:RC4-SHA:AES128-SHA:AES128-SHA256:AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA:ECDH-RSA-DES-CBC3-SHA:ECDH-RSA-AES128-SHA:ECDH-RSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:DHE-DSS-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:AES256-SHA256:ECDHE-RSA-DES-CBC3-SHA:ECDHE-RSA-AES128-SHA256:AES256-GCM-SHA384:AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-SHA256:ADH-AES256-GCM-SHA384:AECDH-AES128-SHA:ECDHE-RSA-RC4-SHA:ECDHE-ECDSA-AES128-SHA  . 
+Hexcode  Cipher Suite Name (OpenSSL)       KeyExch.   Encryption  Bits     Cipher Suite Name (IANA/RFC)
+-----------------------------------------------------------------------------------------------------------------------------
+SSLv2
+ - 
+SSLv3
+ - 
+TLSv1
+ - 
+TLSv1.1
+ - 
+TLSv1.2 (listed by strength)
+ xc02c   ECDHE-ECDSA-AES256-GCM-SHA384     ECDH 253   AESGCM      256      TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384            
+ xcca9   ECDHE-ECDSA-CHACHA20-POLY1305     ECDH 253   ChaCha20    256      TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256      
+ xc02b   ECDHE-ECDSA-AES128-GCM-SHA256     ECDH 253   AESGCM      128      TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256            
+TLSv1.3 (server order)
+ x1302   TLS_AES_256_GCM_SHA384            ECDH 253   AESGCM      256      TLS_AES_256_GCM_SHA384                             
+ x1303   TLS_CHACHA20_POLY1305_SHA256      ECDH 253   ChaCha20    256      TLS_CHACHA20_POLY1305_SHA256                       
+ x1301   TLS_AES_128_GCM_SHA256            ECDH 253   AESGCM      128      TLS_AES_128_GCM_SHA256                             
+
+ Has server cipher order?     unable to determine
+
+
+ Testing robust forward secrecy (FS) -- omitting Null Authentication/Encryption, 3DES, RC4 
+
+ FS is offered (OK) , ciphers follow (client/browser support is important here) 
+
+Hexcode  Cipher Suite Name (OpenSSL)       KeyExch.   Encryption  Bits     Cipher Suite Name (IANA/RFC)
+-----------------------------------------------------------------------------------------------------------------------------
+ x1302   TLS_AES_256_GCM_SHA384            ECDH 253   AESGCM      256      TLS_AES_256_GCM_SHA384                             
+ x1303   TLS_CHACHA20_POLY1305_SHA256      ECDH 253   ChaCha20    256      TLS_CHACHA20_POLY1305_SHA256                       
+ xc02c   ECDHE-ECDSA-AES256-GCM-SHA384     ECDH 253   AESGCM      256      TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384            
+ xcca9   ECDHE-ECDSA-CHACHA20-POLY1305     ECDH 253   ChaCha20    256      TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256      
+ x1301   TLS_AES_128_GCM_SHA256            ECDH 253   AESGCM      128      TLS_AES_128_GCM_SHA256                             
+ xc02b   ECDHE-ECDSA-AES128-GCM-SHA256     ECDH 253   AESGCM      128      TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256            
+
+ Elliptic curves offered:     prime256v1 secp384r1 secp521r1 X25519 X448 
+ TLS 1.2 sig_algs offered:    Ed25519 
+ TLS 1.3 sig_algs offered:    Ed25519 
+
+ Testing server defaults (Server Hello) 
+
+ TLS extensions (standard)    "renegotiation info/#65281" "server name/#0" "EC point formats/#11" "session ticket/#35" "supported versions/#43"
+                              "key share/#51" "supported_groups/#10" "max fragment length/#1" "application layer protocol negotiation/#16"
+                              "extended master secret/#23"
+ Session Ticket RFC 5077 hint no -- no lifetime advertised
+ SSL Session ID support       no
+ Session Resumption           Tickets no, ID: no
+ TLS clock skew               Random values, no fingerprinting possible 
+ Certificate Compression      none
+ Client Authentication        none
+ Signature Algorithm          Ed25519
+ Server key size              EdDSA Ed25519
+ Server key usage             --
+ Server extended key usage    --
+ Serial                       11F30B4A8074E28769FF3FCDA48A9B16F9ECA34D (OK: length 20)
+ Fingerprints                 SHA1 880BCF2B79BA2F8197A0C436CF09A9C9BD4FFB1A
+                              SHA256 A7E4400B1DDC5CEFDFE72ED343FA160CB1C6072DC5323A2894BEF3D01511B089
+ Common Name (CN)             domain.com 
+ subjectAltName (SAN)         domain.com www.domain.com 
+ Trust (hostname)             Ok via SAN and CN (same w/o SNI)
+ Chain of trust               NOT ok (self signed)
+ EV cert (experimental)       no 
+ Certificate Validity (UTC)   3649 >= 60 days (2024-09-06 04:03 --> 2034-09-04 04:03)
+                              >= 10 years is way too long
+ ETS/"eTLS", visibility info  not present
+ Certificate Revocation List  --
+ OCSP URI                     --
+                              NOT ok -- neither CRL nor OCSP URI provided
+ OCSP stapling                not offered
+ OCSP must staple extension   --
+ DNS CAA RR (experimental)    (instructed to minimize/skip DNS queries)
+ Certificate Transparency     N/A
+ Certificates provided        1
+ Issuer                       domain.com
+ Intermediate Bad OCSP (exp.) Ok
+
+
+
+ Testing ciphers per protocol via OpenSSL plus sockets against the server, ordered by encryption strength 
+
+Hexcode  Cipher Suite Name (OpenSSL)       KeyExch.   Encryption  Bits     Cipher Suite Name (IANA/RFC)
+-----------------------------------------------------------------------------------------------------------------------------
+SSLv2
+ - 
+SSLv3
+ - 
+TLS 1
+ - 
+TLS 1.1
+ - 
+TLS 1.2
+ xc02c   ECDHE-ECDSA-AES256-GCM-SHA384     ECDH 253   AESGCM      256      TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384            
+ xcca9   ECDHE-ECDSA-CHACHA20-POLY1305     ECDH 253   ChaCha20    256      TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256      
+ xc02b   ECDHE-ECDSA-AES128-GCM-SHA256     ECDH 253   AESGCM      128      TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256            
+TLS 1.3
+ x1302   TLS_AES_256_GCM_SHA384            ECDH 253   AESGCM      256      TLS_AES_256_GCM_SHA384                             
+ x1303   TLS_CHACHA20_POLY1305_SHA256      ECDH 253   ChaCha20    256      TLS_CHACHA20_POLY1305_SHA256                       
+ x1301   TLS_AES_128_GCM_SHA256            ECDH 253   AESGCM      128      TLS_AES_128_GCM_SHA256                             
+Could not determine the protocol, only simulating generic clients.
+
+ Running client simulations via sockets 
+
+ Browser                      Protocol  Cipher Suite Name (OpenSSL)       Forward Secrecy
+------------------------------------------------------------------------------------------------
+ Android 6.0                  No connection
+ Android 7.0 (native)         No connection
+ Android 8.1 (native)         No connection
+ Android 9.0 (native)         No connection
+ Android 10.0 (native)        No connection
+ Android 11 (native)          No connection
+ Android 12 (native)          No connection
+ Chrome 79 (Win 10)           No connection
+ Chrome 101 (Win 10)          No connection
+ Firefox 66 (Win 8.1/10)      No connection
+ Firefox 100 (Win 10)         No connection
+ IE 6 XP                      No connection
+ IE 8 Win 7                   No connection
+ IE 8 XP                      No connection
+ IE 11 Win 7                  No connection
+ IE 11 Win 8.1                No connection
+ IE 11 Win Phone 8.1          No connection
+ IE 11 Win 10                 No connection
+ Edge 15 Win 10               No connection
+ Edge 101 Win 10 21H2         No connection
+ Safari 12.1 (iOS 12.2)       No connection
+ Safari 13.0 (macOS 10.14.6)  No connection
+ Safari 15.4 (macOS 12.3.1)   No connection
+ Java 7u25                    No connection
+ Java 8u161                   No connection
+ Java 11.0.2 (OpenJDK)        No connection
+ Java 17.0.3 (OpenJDK)        TLSv1.3   TLS_AES_256_GCM_SHA384            253 bit ECDH (X25519)
+ go 1.17.8                    TLSv1.3   TLS_AES_256_GCM_SHA384            253 bit ECDH (X25519)
+ LibreSSL 2.8.3 (Apple)       No connection
+ OpenSSL 1.0.2e               No connection
+ OpenSSL 1.1.0l (Debian)      No connection
+ OpenSSL 1.1.1d (Debian)      TLSv1.3   TLS_AES_256_GCM_SHA384            253 bit ECDH (X25519)
+ OpenSSL 3.0.3 (git)          TLSv1.3   TLS_AES_256_GCM_SHA384            253 bit ECDH (X25519)
+ Apple Mail (16.0)            No connection
+ Thunderbird (91.9)           No connection
+
+ Done 2024-09-06 04:27:50 [  36s] -->> 192.168.122.60:443 (domain.com) <<--
+```
